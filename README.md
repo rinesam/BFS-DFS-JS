@@ -1,1 +1,5 @@
-# BFS-DFS-JS
+# BFS-DFS-JS![5-dfs](https://github.com/rinesam/BFS-DFS-JS/assets/58374578/71bd0dde-8228-4b04-892d-f95273241d9b)
+![4-bfs](https://github.com/rinesam/BFS-DFS-JS/assets/58374578/edb64f91-54ed-455d-8801-cc076a96550b)
+![3](https://github.com/rinesam/BFS-DFS-JS/assets/58374578/e2165916-ca4b-4abb-8df9-6cdb85ea17f2)
+![1 2](https://github.com/rinesam/BFS-DFS-JS/assets/58374578/ba36bd76-85b7-446e-93a3-75ab46d1f243)
+![1 1](https://github.com/rinesam/BFS-DFS-JS/assets/58374578/c5b2f286-8bd4-4b8d-8b8e-9e8cccb78f6e)
