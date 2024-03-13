@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Solver/Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<div id="language-popup" style="display: flex;">
+    <div class="popup-content">
+        <h2 id="select">Select Language</h2>
+        <select id="language-dropdown">
+            <option value="en">English</option>
+            <option value="sq">Shqip</option>
+        </select>
+        <button id="select-language">Select</button>
+    </div>
+</div>
+
+<body>
+    <div id="popup-overlay" style="display: none;">
+        <div id="popup-message">
+            <h2 id="Welcome">Welcome to the Maze Explorer!</h2>
+            <p id="embark">Embark on a journey through intricately designed mazes! This game challenges you to find your way from start to finish through a labyrinth of paths.</p>
+            
+            <h3 id="how_to_play">How to Play:</h3>
+            <ul>
+                <li id="generate0">Use the <strong>Generate</strong> button to create a new maze.</li>
+                <li id="solve0">Click on <strong>Solve</strong> to see the maze solved automatically using Breadth-First Search (BFS) or Depth-First Search (DFS) algorithms.</li>
+                <li id="challenge">Or, take the challenge and try to solve the maze yourself! Simply click on the path you think is correct.</li>
+            </ul>
+            
+            <p id="can_you">Can you find your way through the maze's twists and turns? Start your adventure now!</p>
+            
+            <button id="start-game">Start Game</button>
+        </div>
+    </div>
+    
+    
+
+    <div id="main-container">
+        <div id="maze-container">
+            <canvas></canvas>
+        </div>
+
+        <div id="controls">
+            <button id="generate">Generate Maze</button>
+            <input id="size" type="text" value="10" placeholder="Maze Size" />
+            <button id="solve">Solve Maze with BFS</button>
+            <button id="solve2">Solve Maze with DFS</button>
+            <button id="clear">Clear Solution</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
