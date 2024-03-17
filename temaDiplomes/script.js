@@ -15,27 +15,6 @@ var Cell = function(cellType){
     this.bfsColor = "white";
     this.dfsColor = "white";
 };
-/*
-Cell.prototype.getColor = function() {
-    if (this.value == "#"){
-        return "#000000"; //black
-    }
-    else if (this.value == " "){
-        return "#FFFFFF";//white
-    }
-    else if (this.value == "S"){
-        return "#008000";//green for start
-    }
-    else if (this.value == "E"){
-        return "#FF0000";//red for end
-    }
-    else if (this.value == "P"){
-        return "#800080";//violet for path
-    }
-    else{
-        return "#FFFF00";//yellow
-    }
-};*/
 
 Cell.prototype.getColor = function() {
     switch(this.value) {
@@ -130,86 +109,17 @@ Maze.prototype.initContents = function(desiredRes){
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('popup-overlay').style.display = 'flex';
+
+//default size to be generated too
+    let defaultSize = 10; 
+    size.value = defaultSize; 
+    generator(); 
 });
 
 document.getElementById('start-game').addEventListener('click', function() {
     document.getElementById('popup-overlay').style.display = 'none';
 });
 
-
-
-
-
-
-
-/*
-Maze.prototype.generator = function([x1, x2], [y1, y2], desiredRes){
-    let width = x2 - x1;
-    let height = y2 - y1;
-    if (width >= height){
-        // vertical bisection
-        if(x2-x1>3){
-            let bisection = Math.ceil((x1+x2)/2);
-            let max = y2-1;
-            let min = y1+1;
-            let randomPassage = Math.floor(Math.random() * (max - min + 1)) + min;
-            for (let i = y1+1; i < y2; i++){
-                if (i != randomPassage){
-                    this.contents[i][bisection].value = "#";
-                }
-            }
-            this.generator([x1, bisection],[y1, y2], desiredRes);
-            this.generator([bisection, x2],[y1, y2], desiredRes);
-        }
-    }
-    else{
-        // horizontal bisection
-        if (y2-y1 > 3){
-            let bisection = Math.ceil((y1+y2)/2);
-            let max = x2-1;
-            let min = x1+1;
-            let randomPassage = Math.floor(Math.random() * (max - min + 1)) + min;
-            for (let i = x1+1; i < x2; i++){
-                if (i != randomPassage){
-                    this.contents[bisection][i].value = "#";
-                }
-            } 
-            this.generator([x1, x2],[y1, bisection], desiredRes);
-            this.generator([x1, x2],[bisection, y2], desiredRes);
-        }
-    }
-};*/
-/*
-Maze.prototype.generator = function([x1, x2], [y1, y2], desiredRes){
-    let width = x2 - x1;
-    let height = y2 - y1;
-
-    if (width < 2 || height < 2) return; // Stop if the area is too small
-
-    if (width >= height) {
-        // vertical bisection
-        let bisection = Math.floor(Math.random() * (width - 2)) + x1 + 1;
-        let openRow = Math.floor(Math.random() * (height - 2)) + y1 + 1;
-
-        for (let i = y1; i <= y2; i++) {
-            if (i !== openRow) this.contents[i][bisection].value = "#";
-        }
-
-        this.generator([x1, bisection - 1], [y1, y2], desiredRes);
-        this.generator([bisection + 1, x2], [y1, y2], desiredRes);
-    } else {
-        // horizontal bisection
-        let bisection = Math.floor(Math.random() * (height - 2)) + y1 + 1;
-        let openCol = Math.floor(Math.random() * (width - 2)) + x1 + 1;
-
-        for (let i = x1; i <= x2; i++) {
-            if (i !== openCol) this.contents[bisection][i].value = "#";
-        }
-
-        this.generator([x1, x2], [y1, bisection - 1], desiredRes);
-        this.generator([x1, x2], [bisection + 1, y2], desiredRes);
-    }
-};*/
 Maze.prototype.generator = function([x1, x2], [y1, y2], desiredRes){
 	let width = x2 - x1;
 	let height = y2 - y1;
@@ -279,24 +189,6 @@ Maze.prototype.generator = function([x1, x2], [y1, y2], desiredRes){
 	}
 };
  
-/*
-Maze.prototype.render = function(){
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    let numRows = this.contents.length;
-    let numCols = this.contents[0].length;
-    let cellWidth = WIDTH/numCols;
-    let cellHeight = HEIGHT/numRows;
-    let cellLength = cellWidth > cellHeight ? cellHeight : cellWidth;
-    for (let row = 0; row < numRows; row++){
-        for (let col = 0; col < numCols; col++){
-            let cell = this.contents[row][col];
-            ctx.fillStyle = cell.getColor();
-            let rectX = col * cellLength;
-            let rectY = row * cellLength;
-            ctx.fillRect(rectX, rectY, cellLength, cellLength);
-        }
-    }
-};*/
 
 Maze.prototype.render = function(){
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -354,70 +246,6 @@ Maze.prototype.reset = function() {
     this.render();
 };
 
-Maze.prototype.shortestBFS = function(){
-    this.reset();
-    let start = this.end;
-    start.setDistance(0);
-    start.setPred(null);
-    let cellQueue = []; // enqueue is push - dequeue is shift
-    cellQueue.push(start);
-    while (cellQueue.length > 0){
-        let currentCell = cellQueue.shift();
-        let neighbors = currentCell.getNeighbors();
-        for (let neighbor of neighbors){
-            let row = neighbor[0];
-            let col = neighbor[1];
-            if (row >= 0 && col >= 0 && row < this.contents.length && col < this.contents[0].length){
-                let cell = this.contents[row][col];
-                if (cell.getBFSColor() == "white" && cell.value != "#"){
-                    cell.setBFSColor("gray");
-                    cell.setDistance(currentCell.getDistance() + 1);
-                    cell.setPred(currentCell);
-                    cellQueue.push(cell);
-                }
-            }
-        }
-        currentCell.setBFSColor("black");
-    }
-};
-
-Maze.prototype.shortestDFS = function () {
-    this.reset();
-    let start = this.start;
-    let cellStack = []; 
-    cellStack.push(start);
-
-    while (cellStack.length > 0) {
-        let currentCell = cellStack.pop();
-        if (currentCell.getDFSColor() === "white") {
-            currentCell.setDFSColor("gray");
-
-            let neighbors = currentCell.getNeighbors();
-            for (let neighbor of neighbors) {
-                let row = neighbor[0];
-                let col = neighbor[1];
-                if (row >= 0 && col >= 0 && row < this.contents.length && col < this.contents[0].length) {
-                    let nextCell = this.contents[row][col];
-                    if (nextCell.getDFSColor() === "white" && nextCell.value !== "#") {
-                        nextCell.setPred(currentCell);
-                        cellStack.push(nextCell);
-                    }
-                }
-            }
-            currentCell.setDFSColor("black");
-        }
-    }
-};
-
-Maze.prototype.bfsTraverse = function(currentCell){
-    currentCell.value = "P";
-    this.render();
-};
-
-Maze.prototype.dfsTraverse = function(currentCell){
-    currentCell.value = "P";
-    this.render();
-};
 
 Maze.prototype.clearSolution = function(){
     for (let row of this.contents){
@@ -435,6 +263,185 @@ Maze.prototype.clearSolution = function(){
     }
 };
 
+
+Maze.prototype.shortestBFS = function() {
+    this.reset();
+    let start = this.start;
+    start.setDistance(0);
+    start.setPred(null);
+    let cellQueue = [];
+    cellQueue.push(start);
+
+    while (cellQueue.length > 0) {
+        let currentCell = cellQueue.shift();
+        if (currentCell === this.end) {
+            break; // Stop if the end is reached
+        }
+        let neighbors = currentCell.getNeighbors();
+        for (let neighbor of neighbors) {
+            let row = neighbor[0];
+            let col = neighbor[1];
+            if (row >= 0 && col >= 0 && row < this.contents.length && col < this.contents[0].length) {
+                let nextCell = this.contents[row][col];
+                if (nextCell.value !== "#" && nextCell.getBFSColor() === "white") {
+                    nextCell.setBFSColor("gray");
+                    nextCell.setPred(currentCell);
+                    cellQueue.push(nextCell);
+                }
+            }
+        }
+        currentCell.setBFSColor("black");
+    }
+    this.traceBackPathBFS();
+};
+
+Maze.prototype.traceBackPathBFS = function() {
+    let currentCell = this.end;
+    while (currentCell !== this.start) {
+        currentCell.value = "P";
+        currentCell = currentCell.getPred();
+        if (!currentCell) {
+            break; // In case there is no path
+        }
+    }
+    this.render();
+};
+
+
+Maze.prototype.shortestDFS = function() {
+    this.reset();
+    let start = this.start;
+    let cellStack = [];
+    cellStack.push(start);
+
+    while (cellStack.length > 0) {
+        let currentCell = cellStack.pop();
+        if (currentCell === this.end) {
+            break; // Stop if the end is reached
+        }
+        if (currentCell.getDFSColor() === "white") {
+            currentCell.setDFSColor("gray");
+
+            let neighbors = currentCell.getNeighbors();
+            for (let neighbor of neighbors) {
+                let row = neighbor[0];
+                let col = neighbor[1];
+                if (row >= 0 && col >= 0 && row < this.contents.length && col < this.contents[0].length) {
+                    let nextCell = this.contents[row][col];
+                    if (nextCell.value !== "#" && nextCell.getDFSColor() === "white") {
+                        nextCell.setPred(currentCell);
+                        cellStack.push(nextCell);
+                    }
+                }
+            }
+        }
+    }
+    this.traceBackPathDFS();
+};
+
+Maze.prototype.traceBackPathDFS = function() {
+    let currentCell = this.end;
+    while (currentCell !== this.start) {
+        currentCell.value = "P";
+        currentCell = currentCell.getPred();
+        if (!currentCell) {
+            break; // In case there is no path
+        }
+    }
+    this.render();
+};
+
+
+
+
+
+
+/*
+Maze.prototype.shortestBFS = function(){
+    this.reset();
+    let start = this.start;
+    start.setDistance(0);
+    start.setPred(null);
+    let cellQueue = [start];
+
+    while (cellQueue.length > 0){
+        let currentCell = cellQueue.shift();
+        if (currentCell === this.end) break;
+
+        let neighbors = currentCell.getNeighbors();
+        for (let [row, col] of neighbors){
+            if (this.isValidCell(row, col)) {
+                let cell = this.contents[row][col];
+                if (cell.getBFSColor() === "white" && cell.value !== "#"){
+                    cell.setBFSColor("gray");
+                    cell.setPred(currentCell);
+                    cellQueue.push(cell);
+                }
+            }
+        }
+        currentCell.setBFSColor("black");
+    }
+
+    this.tracePath(this.end);
+};
+
+Maze.prototype.isValidCell = function(row, col){
+    return row >= 0 && col >= 0 && row < this.contents.length && col < this.contents[0].length;
+};
+
+Maze.prototype.tracePath = function(endCell){
+    let current = endCell;
+    let path = [];
+    while (current !== null) {
+        if (current.value === "S") break;
+        path.push(current);
+        current = current.getPred();
+    }
+
+    let animate = () => {
+        if (path.length > 0) {
+            let cell = path.pop();
+            if (cell.value !== "S") cell.value = "P";
+            this.render();
+            requestAnimationFrame(animate);
+        }
+    };
+
+    animate();
+
+};
+
+
+
+Maze.prototype.shortestDFS = function() {
+    this.reset();
+    let stack = [this.start];
+
+    while (stack.length > 0) {
+        let currentCell = stack.pop();
+        if (currentCell === this.end) break;
+
+        if (currentCell.getDFSColor() === "white") {
+            currentCell.setDFSColor("gray");
+            let neighbors = currentCell.getNeighbors();
+            for (let [row, col] of neighbors) {
+                if (this.isValidCell(row, col) && this.contents[row][col].getDFSColor() === "white" && this.contents[row][col].value !== "#") {
+                    let nextCell = this.contents[row][col];
+                    nextCell.setPred(currentCell);
+                    stack.push(nextCell);
+                }
+            }
+        }
+    }
+
+    this.tracePath(this.end);
+};
+
+*/
+
+
+
+
 let generate = document.getElementById("generate");
 let size = document.getElementById("size");
 let solve = document.getElementById("solve");
@@ -443,17 +450,26 @@ let clear = document.getElementById("clear");
 
 myMaze = null;
 
+
+// Updated generator function with size check
 function generator(){
-    myMaze = new Maze();
-    genSize = size.value;
-    myMaze.initContents(genSize);
-    myMaze.generator([0, genSize-1], [0, genSize-1], genSize);
-    myMaze.initPoints();
-    myMaze.render();
+    genSize = parseInt(size.value);
+    if (genSize && genSize >= 5 && genSize <= 100) { //pyte profen sa osht ma mire me lon!!!
+        myMaze = new Maze();
+        myMaze.initContents(genSize);
+        myMaze.generator([0, genSize-1], [0, genSize-1], genSize);
+        myMaze.initPoints();
+        myMaze.render();
+    }
 }
 
-generator();
-generate.addEventListener("click", generator);
+// Event listener for size input field
+size.addEventListener('input', function() {
+    if(this.value !== '') {
+        generator();
+    }
+});
+
 
 
 
