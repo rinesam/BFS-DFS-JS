@@ -1,8 +1,8 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #1e1e1e; /* Dark background */
-    color: #d4d4d4; /* Light text color for contrast */
+    background-color: #1e1e1e; 
+    color: #d4d4d4; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,7 +12,7 @@ body {
 
 #maze-container {
     text-align: center;
-    background-color: #252526; /* Slightly lighter than body background */
+    background-color: #252526; 
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
@@ -20,11 +20,11 @@ body {
 
 canvas {
     margin-top: 20px;
-    border: 3px solid #3c3c3c; /* Dark grey border */
+    border: 3px solid #3c3c3c; 
 }
 
 button {
-    background-color: #007acc; /* Bright color for buttons */
+    background-color: #007acc; 
     color: white;
     border: none;
     padding: 10px 20px;
@@ -88,14 +88,12 @@ label {
 }
     
 #popup-message ul {
-    list-style-type: none; /* Removes bullet points */
-    padding-left: 0; /* Removes indentation */
+    list-style-type: none; 
+    padding-left: 0; 
 }
 
 #popup-message li {
-    margin-bottom: 10px; /* Adds some space between list items */
-}
-
+    margin-bottom: 10px; }
 
 /*gjuhet */
 
@@ -117,3 +115,4 @@ label {
     border-radius: 5px;
     text-align: center;
 }
+
