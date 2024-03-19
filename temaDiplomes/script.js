@@ -23,6 +23,7 @@ Cell.prototype.getColor = function() {
         case "S": return "#4285F4"; // starti
         case "E": return "#34A853"; // fundi
         case "P": return "#EB4335"; // pathi
+        case "V": return "orange";//e vizitune amo sosht pathi perfundimtar
         default:  return "#FBBC05"; // yellow
     }
 };
@@ -232,7 +233,7 @@ Maze.prototype.reset = function() {
             cell.bfsColor = "white";
             cell.dfsColor = "white";
             cell.pred = null;
-            if (cell.value === "P") {
+            if (cell.value === "P"|| cell.value === "V") {
                 cell.value = " ";
             }
         }
@@ -250,7 +251,7 @@ Maze.prototype.reset = function() {
 Maze.prototype.clearSolution = function(){
     for (let row of this.contents){
         for (let element of row){
-            if (element.value == "P"){
+            if (element.value == "P"|| element.value == "V"){
                 element.value = " ";
             }
         }
@@ -261,9 +262,8 @@ Maze.prototype.clearSolution = function(){
     if (this.end) {
         this.end.value = "E";
     }
+    this.render();
 };
-
-
 Maze.prototype.shortestBFS = function() {
     this.reset();
     let start = this.start;
@@ -272,11 +272,17 @@ Maze.prototype.shortestBFS = function() {
     let cellQueue = [];
     cellQueue.push(start);
 
-    while (cellQueue.length > 0) {
+    const processCell = () => {
+        if (cellQueue.length === 0) {
+            return; // No more cells to process
+        }
+
         let currentCell = cellQueue.shift();
         if (currentCell === this.end) {
-            break; // Stop if the end is reached
+            this.traceBackPathBFS(); // Trace back the path
+            return; // End reached
         }
+
         let neighbors = currentCell.getNeighbors();
         for (let neighbor of neighbors) {
             let row = neighbor[0];
@@ -285,28 +291,48 @@ Maze.prototype.shortestBFS = function() {
                 let nextCell = this.contents[row][col];
                 if (nextCell.value !== "#" && nextCell.getBFSColor() === "white") {
                     nextCell.setBFSColor("gray");
+                    nextCell.value = "V"; // Mark as visited (orange)
                     nextCell.setPred(currentCell);
                     cellQueue.push(nextCell);
                 }
             }
         }
         currentCell.setBFSColor("black");
-    }
-    this.traceBackPathBFS();
-};
+        this.render(); // Render the current state of the maze
 
+        requestAnimationFrame(processCell); // Schedule next cell
+    };
+
+    processCell(); // Start the process
+};
 Maze.prototype.traceBackPathBFS = function() {
     let currentCell = this.end;
-    while (currentCell !== this.start) {
-        currentCell.value = "P";
-        currentCell = currentCell.getPred();
-        if (!currentCell) {
-            break; // In case there is no path
-        }
-    }
-    this.render();
-};
+    let path = [];
 
+    while (currentCell !== this.start && currentCell != null) {
+        path.push(currentCell);
+        currentCell = currentCell.getPred();
+    }
+
+    const animatePath = () => {
+        if (path.length === 0) {
+            this.start.value = "S"; // Ensure start point is visible
+            this.end.value = "E";   // Ensure end point is visible
+            this.render(); // Final render
+            return; // No more cells in the path
+        }
+
+        let cell = path.pop();
+        if (cell !== this.start && cell !== this.end) {
+            cell.value = "P"; // Set path cell to 'P' (for red color)
+        }
+        this.render(); // Render the current state of the maze
+
+        requestAnimationFrame(animatePath); // Schedule next cell
+    };
+
+    animatePath(); // Start animating the path
+};
 
 Maze.prototype.shortestDFS = function() {
     this.reset();
@@ -314,13 +340,23 @@ Maze.prototype.shortestDFS = function() {
     let cellStack = [];
     cellStack.push(start);
 
-    while (cellStack.length > 0) {
+    const processCell = () => {
+        if (cellStack.length === 0) {
+            this.traceBackPathDFS();
+            return;
+        }
+
         let currentCell = cellStack.pop();
         if (currentCell === this.end) {
-            break; // Stop if the end is reached
+            this.traceBackPathDFS();
+            return;
         }
         if (currentCell.getDFSColor() === "white") {
-            currentCell.setDFSColor("gray");
+            // Prevent changing the start cell's appearance
+            if (currentCell !== this.start) {
+                currentCell.setDFSColor("gray");
+                currentCell.value = "V"; // Mark as visited (orange)
+            }
 
             let neighbors = currentCell.getNeighbors();
             for (let neighbor of neighbors) {
@@ -335,109 +371,41 @@ Maze.prototype.shortestDFS = function() {
                 }
             }
         }
-    }
-    this.traceBackPathDFS();
+        this.render();
+        requestAnimationFrame(processCell);
+    };
+
+    processCell();
 };
 
 Maze.prototype.traceBackPathDFS = function() {
     let currentCell = this.end;
-    while (currentCell !== this.start) {
-        currentCell.value = "P";
-        currentCell = currentCell.getPred();
-        if (!currentCell) {
-            break; // In case there is no path
-        }
-    }
-    this.render();
-};
-
-
-
-
-
-
-/*
-Maze.prototype.shortestBFS = function(){
-    this.reset();
-    let start = this.start;
-    start.setDistance(0);
-    start.setPred(null);
-    let cellQueue = [start];
-
-    while (cellQueue.length > 0){
-        let currentCell = cellQueue.shift();
-        if (currentCell === this.end) break;
-
-        let neighbors = currentCell.getNeighbors();
-        for (let [row, col] of neighbors){
-            if (this.isValidCell(row, col)) {
-                let cell = this.contents[row][col];
-                if (cell.getBFSColor() === "white" && cell.value !== "#"){
-                    cell.setBFSColor("gray");
-                    cell.setPred(currentCell);
-                    cellQueue.push(cell);
-                }
-            }
-        }
-        currentCell.setBFSColor("black");
-    }
-
-    this.tracePath(this.end);
-};
-
-Maze.prototype.isValidCell = function(row, col){
-    return row >= 0 && col >= 0 && row < this.contents.length && col < this.contents[0].length;
-};
-
-Maze.prototype.tracePath = function(endCell){
-    let current = endCell;
     let path = [];
-    while (current !== null) {
-        if (current.value === "S") break;
-        path.push(current);
-        current = current.getPred();
+
+    while (currentCell !== this.start && currentCell != null) {
+        path.push(currentCell);
+        currentCell = currentCell.getPred();
     }
 
-    let animate = () => {
-        if (path.length > 0) {
-            let cell = path.pop();
-            if (cell.value !== "S") cell.value = "P";
-            this.render();
-            requestAnimationFrame(animate);
+    const animatePath = () => {
+        if (path.length === 0) {
+            this.start.value = "S"; // Ensure start point is visible
+            this.end.value = "E";   // Ensure end point is visible
+            this.render(); // Final render
+            return; // No more cells in the path
         }
+
+        let cell = path.pop();
+        if (cell !== this.start && cell !== this.end) {
+            cell.value = "P"; // Set path cell to 'P' (for red color)
+        }
+        this.render(); // Render the current state of the maze
+
+        requestAnimationFrame(animatePath); // Schedule next cell
     };
 
-    animate();
-
+    animatePath(); // Start animating the path
 };
-
-
-
-Maze.prototype.shortestDFS = function() {
-    this.reset();
-    let stack = [this.start];
-
-    while (stack.length > 0) {
-        let currentCell = stack.pop();
-        if (currentCell === this.end) break;
-
-        if (currentCell.getDFSColor() === "white") {
-            currentCell.setDFSColor("gray");
-            let neighbors = currentCell.getNeighbors();
-            for (let [row, col] of neighbors) {
-                if (this.isValidCell(row, col) && this.contents[row][col].getDFSColor() === "white" && this.contents[row][col].value !== "#") {
-                    let nextCell = this.contents[row][col];
-                    nextCell.setPred(currentCell);
-                    stack.push(nextCell);
-                }
-            }
-        }
-    }
-
-    this.tracePath(this.end);
-};
-
-*/
 
 
 
@@ -451,7 +419,7 @@ let clear = document.getElementById("clear");
 myMaze = null;
 
 
-// Updated generator function with size check
+
 function generator(){
     genSize = parseInt(size.value);
     if (genSize && genSize >= 5 && genSize <= 100) { //pyte profen sa osht ma mire me lon!!!
@@ -463,7 +431,7 @@ function generator(){
     }
 }
 
-// Event listener for size input field
+// Evnt listener for size input 
 size.addEventListener('input', function() {
     if(this.value !== '') {
         generator();
