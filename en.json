@@ -1,0 +1,20 @@
+
+{
+  "select":"Select Language",
+  "select-language":"Select",
+  "welcome": "Welcome to the Maze Explorer!",
+  "embark":"Embark on a journey through intricately designed mazes! This game challenges you to find your way from start to finish through a labyrinth of paths.",
+  "how_to_play": {
+    "title": "How to Play:",
+    "generate0": "Use the <strong>Generate</strong> button to create a new maze.",
+    "solve0": "Click on <strong>Solve</strong> to see the maze solved automatically using Breadth-First Search (BFS) or Depth-First Search (DFS) algorithms.",
+    "challenge": "Or, take the challenge and try to solve the maze yourself! Simply click on the path you think is correct.",
+    "can_you":"Can you find your way through the maze's twists and turns? Start your adventure now!"
+  },
+  "start-game": "Start Game",
+  "size": "Maze Size",
+  "generate": "Write a number you want to generate",
+  "solve": "Solve Maze with BFS",
+  "solve2": "Solve Maze with DFS",
+  "clear": "Clear Solution"
+}
