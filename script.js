@@ -517,8 +517,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('solve').textContent = data.solve;
                 document.getElementById('solve2').textContent = data.solve2;
                 document.getElementById('clear').textContent = data.clear;
+
+             
             });
+
     }
 
-    loadLanguage('en'); // Load lang by default
+   loadLanguage('sq'); // Load lang by default*/
 });
